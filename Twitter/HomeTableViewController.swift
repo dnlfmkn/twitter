@@ -22,9 +22,13 @@ class HomeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadTweets()
         _refreshControl.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
         tableView.refreshControl = _refreshControl
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadTweets()
     }
     
     @objc func loadTweets() {
@@ -32,6 +36,7 @@ class HomeTableViewController: UITableViewController {
        let tweetsEndpoint = "https://api.twitter.com/1.1/statuses/home_timeline.json"
        let params = ["count" : tweetCount]
         TwitterAPICaller.client?.getDictionariesRequest(url: tweetsEndpoint, parameters: params as [String : Any], success: { (tweets: [NSDictionary]) in
+            self.tweets.removeAll()
            for tweet in tweets {
                self.tweets.append(tweet)
            }
@@ -47,6 +52,7 @@ class HomeTableViewController: UITableViewController {
         tweetCount += 10
         let params = ["count": tweetCount]
         TwitterAPICaller.client?.getDictionariesRequest(url: tweetsEndpoint, parameters: params as [String : Any], success: { (tweets: [NSDictionary]) in
+            self.tweets.removeAll()
             for tweet in tweets {
                    self.tweets.append(tweet)
                }
@@ -62,6 +68,7 @@ class HomeTableViewController: UITableViewController {
         let user = tweet["user"] as! NSDictionary
         let imageUrl = URL(string: (user["profile_image_url_https"] as? String)!)
         
+        cell.tweetId = tweet["id"] as! Int
         cell.tweetContent.text = tweet["text"] as? String
         cell.screenName.text = user["screen_name"] as? String
         
@@ -69,6 +76,8 @@ class HomeTableViewController: UITableViewController {
         if let imageData = data {
             cell.profileImage.image = UIImage(data: imageData)
         }
+        cell.setFavorited(isFavorited: tweet["favorited"] as! Bool)
+        cell.setRetweeted(isRetweeted: tweet["retweeted"] as! Bool)
         return cell
     }
     
