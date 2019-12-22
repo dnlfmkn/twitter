@@ -13,6 +13,9 @@ The following **required** functionality is completed:
 - [X] User can log out. (1pt)
 - [X] User stays logged in across restarts. (1pt)
 - [X] User can view tweets with the user profile picture, username, and tweet text. (6pts)
+- [X] User can compose a tweet. (4pts)
+- [X] User can favorite a tweet. (4pts)
+- [X] User can retweet a tweet. (2pts)
 
 The following **bonus** features are implemented:
 
